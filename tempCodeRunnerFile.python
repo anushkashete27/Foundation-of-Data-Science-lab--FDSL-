@@ -1,0 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import pandas as pd
+
+df = pd.read_csv('Titanic-Dataset.csv')
+
+data = df['Age'].dropna()
+
+mean = np.mean(data)
+std_dev = np.std(data)
+
+print('Mean:', mean)
+print('Standard Deviation:', std_dev)
+
+x = np.linspace(mean - 4 * std_dev, mean + 4 * std_dev, 1000)
+y = norm.pdf(x, mean, std_dev)
+
+plt.figure(figsize=(8, 5))
+
+plt.plot(x, y, label='Normal Distribution Curve')
+plt.hist(data, bins=30, density=True, alpha=0.4, label='Actual Data')
+
+plt.axvline(mean, linestyle='--', label='Mean')
+plt.axvline(mean + std_dev, linestyle=':', label='+1 Std Dev')
+plt.axvline(mean - std_dev, linestyle=':', label='-1 Std Dev')
+
+plt.title('Normal Distribution of Titanic Passenger Age')
+plt.xlabel('Age')
+plt.ylabel('Probability Density')
+
+plt.legend()
+plt.show()
+
+within_1std = np.mean((data > mean - std_dev) & (data < mean + std_dev)) * 100
+within_2std = np.mean((data > mean - 2 * std_dev) & (data < mean + 2 * std_dev)) * 100
+
+print(f'% of data within 1 std dev: {within_1std:.2f}%')
+print(f'% of data within 2 std dev: {within_2std:.2f}%')
